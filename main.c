@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mykman <mykman@student.s19.be>             +#+  +:+       +#+        */
+/*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:46:24 by mykman            #+#    #+#             */
-/*   Updated: 2022/03/25 20:32:11 by mykman           ###   ########.fr       */
+/*   Updated: 2022/04/15 23:07:53 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 		fd = -1;
 	if (fd < 0)
 		return (1);
-	line = (char *)&fd;
+	line = (char *)1;
 	while (line)
 	{
 		line = get_next_line(fd);
@@ -41,4 +41,3 @@ int main(int argc, char **argv)
 	close(fd);
 	return (0);
 }
-

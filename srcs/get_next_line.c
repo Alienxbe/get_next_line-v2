@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mykman <mykman@student.s19.be>             +#+  +:+       +#+        */
+/*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:45:34 by mykman            #+#    #+#             */
-/*   Updated: 2022/04/07 18:47:50 by mykman           ###   ########.fr       */
+/*   Updated: 2022/04/15 23:26:13 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	*gnl_substr(char *start, char *end, char *old)
 	long	len;
 
 	len = end - start;
-	if (len < 0)
+	if (start > end)
 		len = ft_strlen(start);
 	str = (char *)malloc(sizeof(*str) * (len + 1));
 	if (str)
@@ -43,7 +43,7 @@ char	*gnl_substr(char *start, char *end, char *old)
 		ft_memcpy(str, start, len);
 		str[len] = 0;
 	}
-	if (old)
+	if (old || !str)
 		free(old);
 	return (str);
 }
@@ -52,29 +52,39 @@ char	*get_next_line(int fd)
 {
 	static char	*saved;
 	char		*line;
-	char		buff[BUFFER_SIZE];
-	int			ret;
+	char		*buff;
+	int			bytes;
 
-	if (fd < 0)
-		return (NULL);
-	ret = 1;
-	while (ret && !ft_strchr(saved, '\n'))
+	buff = (char *)malloc(sizeof(*buff) * (BUFFER_SIZE + 1));
+	if (!buff || read(fd, NULL, 0) < 0)
+		return (free_return(&buff));
+	bytes = 1;
+	while (bytes && !ft_strchr(saved, '\n'))
 	{
-		ret = read(fd, buff, BUFFER_SIZE - 1);
-		buff[ret] = 0;
+		bytes = read(fd, buff, BUFFER_SIZE);
+		buff[bytes] = 0;
 		saved = gnl_strjoin(saved, buff);
 		if (!saved)
-			return (NULL);
+			return (free_return(&buff));
 	}
+	free(buff);
 	if (!*saved)
 	{
-		line = NULL;
 		free(saved);
+		line = NULL;
+		saved = NULL;
 	}
-	else
+	else if (ft_strchr(saved, '\n')) // Cas 1
 	{
 		line = gnl_substr(saved, ft_strchr(saved, '\n') + 1, NULL);
 		saved = gnl_substr(ft_strchr(saved, '\n') + 1, ft_strchr(saved, '\0'), saved);
+		if (!saved)
+			return(free_return(&line));
+	}
+	else
+	{
+		line = gnl_substr(saved, ft_strchr(saved, '\0'), saved);
+		saved = NULL;
 	}
 	return (line);
 }

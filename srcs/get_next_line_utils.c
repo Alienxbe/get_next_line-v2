@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mykman <mykman@student.s19.be>             +#+  +:+       +#+        */
+/*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:56:51 by mykman            #+#    #+#             */
-/*   Updated: 2022/03/22 15:48:57 by mykman           ###   ########.fr       */
+/*   Updated: 2022/04/15 18:38:35 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*free_return(char **str)
+{
+	if (*str)
+		free(*str);
+	*str = NULL;
+	return (NULL);
+}
 
 int	ft_strlen(char *s)
 {
