@@ -6,7 +6,7 @@
 /*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:45:34 by mykman            #+#    #+#             */
-/*   Updated: 2022/04/15 23:26:13 by maykman          ###   ########.fr       */
+/*   Updated: 2022/04/22 16:02:22 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ char	*gnl_substr(char *start, char *end, char *old)
 	long	len;
 
 	len = end - start;
-	if (start > end)
-		len = ft_strlen(start);
 	str = (char *)malloc(sizeof(*str) * (len + 1));
 	if (str)
 	{
@@ -54,10 +52,11 @@ char	*get_next_line(int fd)
 	char		*line;
 	char		*buff;
 	int			bytes;
+	char		*split;
 
 	buff = (char *)malloc(sizeof(*buff) * (BUFFER_SIZE + 1));
 	if (!buff || read(fd, NULL, 0) < 0)
-		return (free_return(&buff));
+		return (free_return(&buff, NULL));
 	bytes = 1;
 	while (bytes && !ft_strchr(saved, '\n'))
 	{
@@ -65,26 +64,15 @@ char	*get_next_line(int fd)
 		buff[bytes] = 0;
 		saved = gnl_strjoin(saved, buff);
 		if (!saved)
-			return (free_return(&buff));
+			return (free_return(&buff, NULL));
 	}
 	free(buff);
-	if (!*saved)
-	{
-		free(saved);
-		line = NULL;
-		saved = NULL;
-	}
-	else if (ft_strchr(saved, '\n')) // Cas 1
-	{
-		line = gnl_substr(saved, ft_strchr(saved, '\n') + 1, NULL);
-		saved = gnl_substr(ft_strchr(saved, '\n') + 1, ft_strchr(saved, '\0'), saved);
-		if (!saved)
-			return(free_return(&line));
-	}
-	else
-	{
-		line = gnl_substr(saved, ft_strchr(saved, '\0'), saved);
-		saved = NULL;
-	}
+	split = ft_strchr(saved, '\n') + 1;
+	if (split < saved)
+		split = ft_strchr(saved, '\0');
+	line = gnl_substr(saved, split, NULL);
+	saved = gnl_substr(split, ft_strchr(saved, '\0'), saved);
+	printf("%p : `%s`\n", line, line);
+	printf("%p : `%s`\n", saved, saved);
 	return (line);
 }

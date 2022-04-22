@@ -6,18 +6,18 @@
 /*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:56:51 by mykman            #+#    #+#             */
-/*   Updated: 2022/04/15 18:38:35 by maykman          ###   ########.fr       */
+/*   Updated: 2022/04/21 16:51:14 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*free_return(char **str)
+char	*free_return(char **str, void *ret)
 {
 	if (*str)
 		free(*str);
 	*str = NULL;
-	return (NULL);
+	return (ret);
 }
 
 int	ft_strlen(char *s)

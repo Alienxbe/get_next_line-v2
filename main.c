@@ -6,7 +6,7 @@
 /*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:46:24 by mykman            #+#    #+#             */
-/*   Updated: 2022/04/15 23:07:53 by maykman          ###   ########.fr       */
+/*   Updated: 2022/04/22 16:02:23 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-int main(int argc, char **argv)
+/*int main(int argc, char **argv)
 {
 	char	*line;
 	int		fd;
@@ -39,5 +39,21 @@ int main(int argc, char **argv)
 		}
 	}
 	close(fd);
+	return (0);
+}*/
+
+int	main(void)
+{
+	char	*line;
+	int		fd;
+
+	fd = open("test.txt", O_RDONLY);
+	for (int i = 0; i < 3; i++)
+	{
+		line = get_next_line(fd);
+		if (line)
+			free(line);
+		printf("----------\n");
+	}
 	return (0);
 }
