@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:45:34 by mykman            #+#    #+#             */
-/*   Updated: 2022/04/22 16:02:22 by maykman          ###   ########.fr       */
+/*   Updated: 2022/04/22 19:50:17 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
-char	*gnl_strjoin(char *s1, char *s2)
+static char	*gnl_strjoin(char *s1, char *s2)
 {
 	int		size;
 	char	*str;
@@ -29,7 +29,7 @@ char	*gnl_strjoin(char *s1, char *s2)
 	return (str);
 }
 
-char	*gnl_substr(char *start, char *end, char *old)
+static char	*gnl_substr(char *start, char *end, char *old)
 {
 	char	*str;
 	long	len;
@@ -46,33 +46,45 @@ char	*gnl_substr(char *start, char *end, char *old)
 	return (str);
 }
 
+static char	*get_line(char **saved)
+{
+	char	*line;
+	char	*split;
+
+	if (!**saved)
+		return (ft_free(saved, NULL));
+	split = ft_strchr(*saved, '\n') + 1;
+	if (split < *saved)
+		split = ft_strchr(*saved, '\0');
+	line = gnl_substr(*saved, split, NULL);
+	*saved = gnl_substr(split, ft_strchr(*saved, '\0'), *saved);
+	if (!line || !*saved)
+		return (ft_free(&line, saved));
+	if (!**saved)
+		ft_free(saved, NULL);
+	return (line);
+}
+
 char	*get_next_line(int fd)
 {
-	static char	*saved;
-	char		*line;
+	static char	*saved[OPEN_MAX];
 	char		*buff;
 	int			bytes;
-	char		*split;
 
+	if (BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
+		return (NULL);
 	buff = (char *)malloc(sizeof(*buff) * (BUFFER_SIZE + 1));
-	if (!buff || read(fd, NULL, 0) < 0)
-		return (free_return(&buff, NULL));
+	if (!buff)
+		return (NULL);
 	bytes = 1;
-	while (bytes && !ft_strchr(saved, '\n'))
+	while (bytes && !ft_strchr(saved[fd], '\n'))
 	{
 		bytes = read(fd, buff, BUFFER_SIZE);
 		buff[bytes] = 0;
-		saved = gnl_strjoin(saved, buff);
-		if (!saved)
-			return (free_return(&buff, NULL));
+		saved[fd] = gnl_strjoin(saved[fd], buff);
+		if (!saved[fd])
+			return (ft_free(&buff, NULL));
 	}
 	free(buff);
-	split = ft_strchr(saved, '\n') + 1;
-	if (split < saved)
-		split = ft_strchr(saved, '\0');
-	line = gnl_substr(saved, split, NULL);
-	saved = gnl_substr(split, ft_strchr(saved, '\0'), saved);
-	printf("%p : `%s`\n", line, line);
-	printf("%p : `%s`\n", saved, saved);
-	return (line);
+	return (get_line(&saved[fd]));
 }

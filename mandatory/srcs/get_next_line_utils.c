@@ -6,18 +6,25 @@
 /*   By: maykman <maykman@student.s19.be>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/21 21:56:51 by mykman            #+#    #+#             */
-/*   Updated: 2022/04/21 16:51:14 by maykman          ###   ########.fr       */
+/*   Updated: 2022/04/22 19:27:43 by maykman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*free_return(char **str, void *ret)
+void	*ft_free(char **s1, char **s2)
 {
-	if (*str)
-		free(*str);
-	*str = NULL;
-	return (ret);
+	if (s1 && *s1)
+	{
+		free(*s1);
+		*s1 = NULL;
+	}
+	if (s2 && *s2)
+	{
+		free(*s2);
+		*s2 = NULL;
+	}
+	return (NULL);
 }
 
 int	ft_strlen(char *s)
@@ -44,6 +51,6 @@ char	*ft_strchr(char *s, char c)
 	while (s && *s && *s != c)
 		s++;
 	if (s && *s == c)
-			return (s);
+		return (s);
 	return (NULL);
 }
